@@ -17,87 +17,103 @@ class LoginScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Entrar"),
         centerTitle: true,
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed('/signup');
+            },
+            textColor: Colors.white,
+            child: Text(
+              "CRIAR CONTA",
+              style: TextStyle(fontSize: 14),
+            ),
+          ),
+        ],
       ),
       body: Center(
         child: Card(
           margin: EdgeInsets.symmetric(horizontal: 16),
-          child: Consumer<UserManager>(
-            builder:(_, userManager, __){
-              return Form(
-            key: formKey,
-            child: ListView(
-              padding: EdgeInsets.all(16),
-              shrinkWrap: true,
-              children: <Widget>[
-                TextFormField(
-                  controller: emailController,
-                  enabled: !userManager.loading,
-                  decoration: InputDecoration(hintText: 'E-mail'),
-                  keyboardType: TextInputType.emailAddress,
-                  autocorrect: false,
-                  validator: (email) {
-                    if (!emailValid(email)) return 'E-mail inválido';
+          child: Consumer<UserManager>(builder: (_, userManager, __) {
+            return Form(
+              key: formKey,
+              child: ListView(
+                padding: EdgeInsets.all(16),
+                shrinkWrap: true,
+                children: <Widget>[
+                  TextFormField(
+                    controller: emailController,
+                    enabled: !userManager.loading,
+                    decoration: InputDecoration(hintText: 'E-mail'),
+                    keyboardType: TextInputType.emailAddress,
+                    autocorrect: false,
+                    validator: (email) {
+                      if (!emailValid(email)) return 'E-mail inválido';
 
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16),
-                TextFormField(
-                  controller: passwordController,
-                  enabled: !userManager.loading,
-                  decoration: InputDecoration(hintText: 'Senha'),
-                  autocorrect: false,
-                  obscureText: true,
-                  validator: (pass) {
-                    if (pass.isEmpty) return 'Senha Inválida';
-                    return null;
-                  },
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: FlatButton(
-                      onPressed: () {},
-                      padding: EdgeInsets.zero,
-                      child: Text('Esqueci minha senha')),
-                ),
-                SizedBox(height: 16),
-                SizedBox(
-                  height: 44,
-                  child: RaisedButton(
-                    onPressed: userManager.loading ? null : () {
-                      if (formKey.currentState.validate()) {
-                        context.read<UserManager>().signIn(
-                            usuario: Usuario(
-                                email: emailController.text,
-                                password: passwordController.text),
-                            onFail: (e) {
-                              scaffoldKey.currentState.showSnackBar(
-                                SnackBar(
-                                  content: Text('Falha ao entrar $e'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            },
-                            onSuccess: () {
-                              //TODO: FECHAR TELA DE LOGIN
-                            });
-                      }
+                      return null;
                     },
-                    color: Theme.of(context).primaryColor,
-                    disabledColor: Theme.of(context).primaryColor.withAlpha(100),
-                    child: userManager.loading ? CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(Colors.white),
-                    ) : Text(
-                      'Entrar',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    textColor: Colors.white,
                   ),
-                ),
-              ],
-            ),
-          );
-            }),
+                  SizedBox(height: 16),
+                  TextFormField(
+                    controller: passwordController,
+                    enabled: !userManager.loading,
+                    decoration: InputDecoration(hintText: 'Senha'),
+                    autocorrect: false,
+                    obscureText: true,
+                    validator: (pass) {
+                      if (pass.isEmpty) return 'Senha Inválida';
+                      return null;
+                    },
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: FlatButton(
+                        onPressed: () {},
+                        padding: EdgeInsets.zero,
+                        child: Text('Esqueci minha senha')),
+                  ),
+                  SizedBox(height: 16),
+                  SizedBox(
+                    height: 44,
+                    child: RaisedButton(
+                      onPressed: userManager.loading
+                          ? null
+                          : () {
+                              if (formKey.currentState.validate()) {
+                                context.read<UserManager>().signIn(
+                                    usuario: Usuario(
+                                        email: emailController.text,
+                                        password: passwordController.text),
+                                    onFail: (e) {
+                                      scaffoldKey.currentState.showSnackBar(
+                                        SnackBar(
+                                          content: Text('Falha ao entrar $e'),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    },
+                                    onSuccess: () {
+                                      Navigator.of(context).pop();
+                                    });
+                              }
+                            },
+                      color: Theme.of(context).primaryColor,
+                      disabledColor:
+                          Theme.of(context).primaryColor.withAlpha(100),
+                      child: userManager.loading
+                          ? CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation(Colors.white),
+                            )
+                          : Text(
+                              'Entrar',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                      textColor: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
         ),
       ),
     );

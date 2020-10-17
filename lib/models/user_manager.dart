@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -11,14 +12,40 @@ class UserManager extends ChangeNotifier {
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final Firestore firestore = Firestore.instance;
 
-  FirebaseUser user;
+  Usuario usuario;
 
   /*Cria a variável booleana para o provider referente ao circularProgress e os campos e botoes inativos de login e passa como falsa*/
   bool _loading = false;
 
   /*Pega o carregamento dentro da varável privada*/
   bool get loading => _loading;
+
+  bool get isLoggedIn => usuario != null;
+
+  //Cadastro de usuário
+  Future<void> signUp(
+      {Usuario usuario, Function onFail, Function onSuccess}) async {
+    loading = true;
+
+    try {
+      final AuthResult result = await auth.createUserWithEmailAndPassword(
+          email: usuario.email, password: usuario.password);
+
+      //user = result.user;
+
+      usuario.id = result.user.uid;
+      this.usuario = usuario;
+
+      await usuario.saveData();
+
+      onSuccess();
+    } on PlatformException catch (e) {
+      onFail(getErrorString(e.code));
+    }
+    loading = false;
+  }
 
   /*Função ue autentica usuario no firebase*/
   Future<void> signIn(
@@ -31,8 +58,8 @@ class UserManager extends ChangeNotifier {
       final AuthResult result = await auth.signInWithEmailAndPassword(
           email: usuario.email, password: usuario.password);
 
-
-          user = result.user;
+      //Pega o usuàrtio do firebase e manda para o metodo loadCurrentUser
+      await _loadCurrentUser(firebaseUser: result.user);
 
       onSuccess();
     } on PlatformException catch (e) {
@@ -51,12 +78,23 @@ class UserManager extends ChangeNotifier {
   }
 
   /*Carrega o usuário logado, caso tenha*/
-  Future<void> _loadCurrentUser() async {
-    final FirebaseUser currentUser = await auth.currentUser();
+  Future<void> _loadCurrentUser({FirebaseUser firebaseUser}) async {
+    final FirebaseUser currentUser = firebaseUser ?? await auth.currentUser();
     if (currentUser != null) {
-      user = currentUser;
-      print(user.uid);
+      //Pega dentro da collection users o currentUser.uid(usuario logado no momento)
+      final DocumentSnapshot docUser =
+          await firestore.collection('users').document(currentUser.uid).get();
+      //obtém os dados
+      usuario = Usuario.fromDocument(docUser);
+      print(usuario.name);
+      notifyListeners();
     }
+    
+  }
+
+  void signOut() {
+    auth.signOut();
+    usuario = null;
     notifyListeners();
   }
 }
