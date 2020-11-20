@@ -20,16 +20,15 @@ class ProductManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Product> get filteredProducts{
+  List<Product> get filteredProducts {
     final List<Product> filteredProducts = [];
 
-    if(search.isEmpty){
+    if (search.isEmpty) {
       filteredProducts.addAll(allProduct);
-    }else{
+    } else {
       //Pego todos os meus produtos e verifico se contem em minusculo a busca que esta fazendo
-      filteredProducts.addAll(
-        allProduct.where((p) => p.name.toLowerCase().contains(search.toLowerCase()))
-      );
+      filteredProducts.addAll(allProduct
+          .where((p) => p.name.toLowerCase().contains(search.toLowerCase())));
     }
     return filteredProducts;
   }

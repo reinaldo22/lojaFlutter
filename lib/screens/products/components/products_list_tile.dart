@@ -10,7 +10,7 @@ class ProductsListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         Navigator.of(context).pushNamed('/productDetail', arguments: product);
       },
       child: Card(

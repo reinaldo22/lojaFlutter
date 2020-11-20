@@ -89,7 +89,6 @@ class UserManager extends ChangeNotifier {
       print(usuario.name);
       notifyListeners();
     }
-    
   }
 
   void signOut() {

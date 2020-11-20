@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-
-
-
 //Show dialog de busca
 class SearchDialog extends StatelessWidget {
   @override
@@ -14,7 +11,7 @@ class SearchDialog extends StatelessWidget {
             left: 6,
             right: 6,
             child: Card(
-              child: TextFormField(
+                child: TextFormField(
               textInputAction: TextInputAction.search,
               autofocus: true,
               decoration: InputDecoration(

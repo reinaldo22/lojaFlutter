@@ -1,6 +1,7 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:lojinha/models/Product.dart';
+import 'package:lojinha/models/cart_manager.dart';
 import 'package:lojinha/models/user_manager.dart';
 import 'package:lojinha/screens/products/components/size_widget.dart';
 import 'package:provider/provider.dart';
@@ -96,30 +97,34 @@ class ProductDetail extends StatelessWidget {
                   ),
                   if (product.hasStock)
                     Consumer2<UserManager, Product>(
-                        builder: (_, userManager, product, __) {
-                      return SizedBox(
-                        height: 44,
-                        child: RaisedButton(
-                          onPressed: product.selectedSize != null
-                              ? () {
-                                  if (userManager.isLoggedIn) {
-                                    //TODO: ADICIONA AO CARRINHO
-                                  } else {
-                                    Navigator.of(context).pushNamed('/login');
+                      builder: (_, userManager, product, __) {
+                        return SizedBox(
+                          height: 44,
+                          child: RaisedButton(
+                            onPressed: product.selectedSize != null
+                                ? () {
+                                    if (userManager.isLoggedIn) {
+                                      context
+                                          .read<CartManager>()
+                                          .addToCart(product);
+                                      Navigator.of(context).pushNamed('/cart');
+                                    } else {
+                                      Navigator.of(context).pushNamed('/login');
+                                    }
                                   }
-                                }
-                              : null,
-                          color: primaryColor,
-                          textColor: Colors.white,
-                          child: Text(
-                            userManager.isLoggedIn
-                                ? 'Adicionar ao Carrinho'
-                                : 'Entre para comprar',
-                            style: TextStyle(fontSize: 18),
+                                : null,
+                            color: primaryColor,
+                            textColor: Colors.white,
+                            child: Text(
+                              userManager.isLoggedIn
+                                  ? 'Adicionar ao Carrinho'
+                                  : 'Entre para Comprar',
+                              style: const TextStyle(fontSize: 18),
+                            ),
                           ),
-                        ),
-                      );
-                    })
+                        );
+                      },
+                    )
                 ],
               ),
             )

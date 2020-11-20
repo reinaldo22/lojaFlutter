@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lojinha/models/cart_manager.dart';
 import 'package:lojinha/models/product_manager.dart';
 import 'package:lojinha/models/user_manager.dart';
 import 'package:lojinha/screens/base/base_screen.dart';
+import 'package:lojinha/screens/cart/cart_screen.dart';
 import 'package:lojinha/screens/login/login_screen.dart';
 import 'package:lojinha/screens/productsDetail/produc_detail_screen.dart';
 import 'package:lojinha/screens/signup/signup_screen.dart';
@@ -33,46 +35,51 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_)=>UserManager(),
+          create: (_) => UserManager(),
           lazy: false,
-          ),
-          ChangeNotifierProvider(
-            create: (_) =>  ProductManager(),
-            lazy: false,
-          ),
-
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ProductManager(),
+          lazy: false,
+        ),
+        ChangeNotifierProxyProvider<UserManager, CartManager>(
+          create: (_) => CartManager(),
+          lazy: false,
+          update: (_, userManager, cartManager) =>
+              cartManager..updateUser(userManager),
+        ),
       ],
       child: MaterialApp(
-          title: 'Loja do Reinaldo',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primaryColor: Color.fromARGB(255, 4, 125, 141),
-            scaffoldBackgroundColor: Color.fromARGB(255, 4, 125, 141),
-            appBarTheme: const AppBarTheme(
-              elevation: 0,
-            ),
-            visualDensity: VisualDensity.adaptivePlatformDensity,
+        title: 'Loja do Reinaldo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primaryColor: Color.fromARGB(255, 4, 125, 141),
+          scaffoldBackgroundColor: Color.fromARGB(255, 4, 125, 141),
+          appBarTheme: const AppBarTheme(
+            elevation: 0,
           ),
-
-          //Rotas de tela
-          initialRoute: '/base',
-          onGenerateRoute: (settings) {
-            switch (settings.name) {
-              case '/login':
-                return MaterialPageRoute(builder: (_) => LoginScreen());
-              case '/signup':
-                return MaterialPageRoute(builder: (_) => SignupScreen());
-              case '/productDetail':
-                return MaterialPageRoute(builder: (_) => ProductDetail(
-                  settings.arguments as Product
-                ));  
-              case '/base':
-              default:
-                return MaterialPageRoute(builder: (_) => BaseScreen());
-            }
-          },
+          visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-      );
 
+        //Rotas de tela
+        initialRoute: '/base',
+        onGenerateRoute: (settings) {
+          switch (settings.name) {
+            case '/login':
+              return MaterialPageRoute(builder: (_) => LoginScreen());
+            case '/cart':
+              return MaterialPageRoute(builder: (_) => CartScreen());
+            case '/signup':
+              return MaterialPageRoute(builder: (_) => SignupScreen());
+            case '/productDetail':
+              return MaterialPageRoute(
+                  builder: (_) => ProductDetail(settings.arguments as Product));
+            case '/base':
+            default:
+              return MaterialPageRoute(builder: (_) => BaseScreen());
+          }
+        },
+      ),
+    );
   }
 }

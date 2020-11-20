@@ -7,8 +7,6 @@ import 'package:provider/provider.dart';
 class BaseScreen extends StatelessWidget {
   final PageController pageController = PageController();
 
-
-
 //Tela principal
   @override
   Widget build(BuildContext context) {
@@ -22,8 +20,7 @@ class BaseScreen extends StatelessWidget {
               drawer: CustomDrawer(),
               appBar: AppBar(
                 title: const Text('Home'),
-              )
-              ),
+              )),
           ProductsScreen(),
           Scaffold(
             drawer: CustomDrawer(),
