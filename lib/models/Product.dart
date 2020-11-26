@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'item_size.dart';
 
 class Product extends ChangeNotifier {
+
+  //Passa o objeto pra uma coleção do firebase
   Product.fromDocument(DocumentSnapshot document) {
     id = document.documentID;
     name = document['name'] as String;
@@ -33,6 +35,7 @@ class Product extends ChangeNotifier {
     notifyListeners();
   }
 
+  /*Busca o total de camisas pelo tamanho e soma todos */
   int get totalStock {
     int stock = 0;
     for (final size in sizes) {
@@ -45,6 +48,7 @@ class Product extends ChangeNotifier {
     return totalStock > 0;
   }
 
+  //Busca o tamanho da camisa
   ItemSize findSize(String name) {
     try {
       return sizes.firstWhere((s) => s.name == name);

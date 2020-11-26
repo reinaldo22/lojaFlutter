@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:lojinha/models/admins_users_manager.dart';
 import 'package:lojinha/models/cart_manager.dart';
+import 'package:lojinha/models/home_manager.dart';
 import 'package:lojinha/models/product_manager.dart';
 import 'package:lojinha/models/user_manager.dart';
 import 'package:lojinha/screens/base/base_screen.dart';
 import 'package:lojinha/screens/cart/cart_screen.dart';
+import 'package:lojinha/screens/edit_product/edit_product_screens.dart';
 import 'package:lojinha/screens/login/login_screen.dart';
 import 'package:lojinha/screens/productsDetail/produc_detail_screen.dart';
 import 'package:lojinha/screens/signup/signup_screen.dart';
@@ -42,11 +45,21 @@ class MyApp extends StatelessWidget {
           create: (_) => ProductManager(),
           lazy: false,
         ),
+        ChangeNotifierProvider(
+          create: (_) => HomeManager(),
+          lazy: false,
+        ),
         ChangeNotifierProxyProvider<UserManager, CartManager>(
           create: (_) => CartManager(),
           lazy: false,
           update: (_, userManager, cartManager) =>
               cartManager..updateUser(userManager),
+        ),
+        ChangeNotifierProxyProvider<UserManager, AdminUsersManager>(
+          create: (_) => AdminUsersManager(),
+          lazy: false,
+          update: (_, userManager, adminUsersManager) =>
+              adminUsersManager..updateUser(userManager),
         ),
       ],
       child: MaterialApp(
@@ -74,6 +87,10 @@ class MyApp extends StatelessWidget {
             case '/productDetail':
               return MaterialPageRoute(
                   builder: (_) => ProductDetail(settings.arguments as Product));
+            case '/edit_product':
+              return MaterialPageRoute(
+                  builder: (_) =>
+                      EditProductScreen(settings.arguments as Product));
             case '/base':
             default:
               return MaterialPageRoute(builder: (_) => BaseScreen());

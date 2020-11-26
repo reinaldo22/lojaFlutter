@@ -49,4 +49,13 @@ class ProductManager extends ChangeNotifier {
     //notifica ao provider
     notifyListeners();
   }
+
+  //Busca o produto pelo id
+  Product findProductById(String id) {
+    try {
+      return allProduct.firstWhere((p) => p.id == id);
+    } catch (e) {
+      return null;
+    }
+  }
 }

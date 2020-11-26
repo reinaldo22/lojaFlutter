@@ -68,7 +68,7 @@ class CartManager extends ChangeNotifier {
 
       _updateCartProduct(cartProduct);
     }
-    print(productsPrice);
+    notifyListeners();
   }
 
   void _updateCartProduct(CartProduct cartProduct) {
@@ -78,6 +78,8 @@ class CartManager extends ChangeNotifier {
           .updateData(cartProduct.toCartItemMap());
   }
 
+  /*Faz uma varredura em itemns e verifica se o produto tem em estoque,
+   se não tiver retona false se tiver retona true*/
   bool get isCartValid {
     for (final cartProduct in items) {
       if (!cartProduct.hasStrock) return false;

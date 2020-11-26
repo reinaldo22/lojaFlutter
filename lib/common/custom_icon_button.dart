@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class CustomIconButton extends StatelessWidget {
-
   CustomIconButton({this.iconData, this.color, this.onTap});
 
   final IconData iconData;
@@ -22,7 +21,7 @@ class CustomIconButton extends StatelessWidget {
               iconData,
               color: color,
             ),
-            ),
+          ),
         ),
       ),
     );
